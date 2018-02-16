@@ -9,9 +9,9 @@
 
 FROM node:5.10.0
 ARG VERSION_TAG
-RUN git clone -b $VERSION_TAG https://github.com/DuoSoftware/DVP-MailReceiver.git /usr/local/src/mailreceiver
-RUN cd /usr/local/src/mailreceiver;
-WORKDIR /usr/local/src/mailreceiver
+RUN git clone -b $VERSION_TAG https://github.com/DuoSoftware/DVP-MailSender.git /usr/local/src/mailsender
+RUN cd /usr/local/src/mailsender;
+WORKDIR /usr/local/src/mailsender
 RUN npm install
-EXPOSE 8877
-CMD [ "node", "/usr/local/src/mailreceiver/app.js" ]
+EXPOSE 8878
+CMD [ "node", "/usr/local/src/mailsender/app.js" ]
