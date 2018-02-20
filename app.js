@@ -80,8 +80,54 @@ process.on('SIGINT', function () {
 
 
 
+// --------------------- HTTP listners -----------------------
+var restify = require('restify');
+var jwt = require('restify-jwt');
+var secret = require('dvp-common/Authentication/Secret.js');
+var authorization = require('dvp-common/Authentication/Authorization.js');
+
+var server = restify.createServer({
+    name: "DVP Facebook Sender Service"
+});
+
+server.pre(restify.pre.userAgentConnection());
+server.use(restify.bodyParser({mapParams: false}));
+server.use(restify.CORS());
+server.use(restify.fullResponse());
+server.use(jwt({secret: secret.Secret}));
+
+restify.CORS.ALLOW_HEADERS.push('authorization');
+
+var config = require('config');
+
+var emailService = require('./Services/mail');
 
 
+server.post('DVP/API/:version/Social/Email', authorization({
+    resource: "social",
+    action: "write"
+}), emailService.CreateMailAccount);
+server.get('DVP/API/:version/Social/Email', authorization({
+    resource: "social",
+    action: "read"
+}), emailService.GetEmailAccount);
+server.get('DVP/API/:version/Social/Emails', authorization({
+    resource: "social",
+    action: "read"
+}), emailService.GetEmailAccounts);
+server.del('DVP/API/:version/Social/Email/:id', authorization({
+    resource: "social",
+    action: "delete"
+}), emailService.DeleteEmailAccount);
+server.put('DVP/API/:version/Social/Email/:id', authorization({
+    resource: "social",
+    action: "write"
+}), emailService.UpdateEmailAccount);
+
+var port = config.Host.port || 3000;
+server.listen(port, function () {
+    logger.info("DVP-LiteTicket.main Server %s listening at %s", server.name, server.url);
+});
 
 
 
