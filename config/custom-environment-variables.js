@@ -51,7 +51,7 @@ module.exports = {
     {
         "vdomain": "LB_FRONTEND",
         "domain": "HOST_NAME",
-        "port": "HOST_MAILRECEIVER_PORT",
+        "port": "HOST_MAILSENDER_PORT",
         "version": "HOST_VERSION",
         "smtplistner": "HOST_ENABLE_SMTPLISTNER",
         "smtpsender": "HOST_ENABLE_SMTPSENDER",
