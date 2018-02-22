@@ -7,6 +7,7 @@ var util = require('util');
 var Email = require('dvp-mongomodels/model/Email').Email;
 
 
+/*
 if (config.Host.smtpsender)
     var smtpconnector = require('./Workers/SMPTConnector');
 
@@ -78,6 +79,7 @@ process.on('SIGINT', function () {
     });
 });
 
+*/
 
 
 // --------------------- HTTP listners -----------------------
