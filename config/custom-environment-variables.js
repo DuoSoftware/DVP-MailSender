@@ -84,10 +84,10 @@ module.exports = {
 
     "SMTP":{
 
-        "ip": "SMTP_HOST",
-        "port": "SMTP_PORT",
-        "user": "SMTP_USER_NAME",
-        "password": "SMTP_PASSWORD"
+        "ip": "SYS_SMTP_HOST",
+        "port": "SYS_SMTP_PORT",
+        "user": "SYS_SMTP_USER_NAME",
+        "password": "SYS_SMTP_PASSWORD"
 
     },
 
