@@ -1,23 +1,23 @@
 module.exports = {
   "DB": {
     "Type":"postgres",
-    "User":"duo",
-    "Password":"DuoS123",
+    "User":"",
+    "Password":"",
     "Port":5432,
     "Host":"localhost",
-    "Database":"dvpdb"
+    "Database":""
   },
 
 
    "Redis":
     {
         "mode":"sentinel",//instance, cluster, sentinel
-        "ip": "45.55.142.207",
+        "ip": "",
         "port": 6389,
-        "user": "duo",
-        "password": "DuoS123",
+        "user": "",
+        "password": "",
         "sentinels":{
-            "hosts": "138.197.90.92,45.55.205.92,138.197.90.92",
+            "hosts": "",
             "port":16389,
             "name":"redis-cluster"
         }
@@ -28,13 +28,13 @@ module.exports = {
     "Security":
     {
 
-        "ip" : "45.55.142.207",
+        "ip" : "",
         "port": 6389,
-        "user": "duo",
-        "password": "DuoS123",
+        "user": "",
+        "password": "",
         "mode":"sentinel",//instance, cluster, sentinel
         "sentinels":{
-            "hosts": "138.197.90.92,45.55.205.92,138.197.90.92",
+            "hosts": "",
             "port":16389,
             "name":"redis-cluster"
         }
@@ -61,7 +61,7 @@ module.exports = {
   "SMSServer":{
 
 
-    "ip":"159.203.109.43",
+    "ip":"",
     "port":"1401",
     "password":"bar",
     "user":"foo"
@@ -72,7 +72,7 @@ module.exports = {
 
   "LBServer" : {
 
-    "ip": "192.168.0.123",
+    "ip": "",
     "port": "4647"
 
   },
@@ -81,10 +81,10 @@ module.exports = {
 
    "SMTP":{
 
-   "ip": "smtp.mandrillapp.com",
+   "ip": "",
    "port": "2525",
-   "user": "rangika@duosoftware.com",
-   "password": "55555"
+   "user": "",
+   "password": ""
 
    },
 
@@ -93,27 +93,27 @@ module.exports = {
 
   "RabbitMQ":
   {
-    "ip": "45.55.142.207",
+    "ip": "",
     "port": 5672,
-    "user": "admin",
-    "password": "admin",
+    "user": "",
+    "password": "",
     "vhost":'/'
   },
 
   "Mongo":
   {
-    "ip":"104.236.231.11",
+    "ip":"",
     "port":"27017",
-    "dbname":"dvpdb",
-    "password":"DuoS123",
-    "user":"duo"
+    "dbname":"",
+    "password":"",
+    "user":""
   },
 
   "IMAP":
   {
-    "username":"duodemouser@gmail.com",
-    "password":"DuoZ4321",
-    "host":"imap.gmail.com",
+    "username":"",
+    "password":"",
+    "host":"",
     "port":993,
     "secure":true,
     "mailbox":"INBOX",
@@ -129,15 +129,15 @@ module.exports = {
 
 
     "Services" : {
-      "accessToken":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdWtpdGhhIiwianRpIjoiYWEzOGRmZWYtNDFhOC00MWUyLTgwMzktOTJjZTY0YjM4ZDFmIiwic3ViIjoiNTZhOWU3NTlmYjA3MTkwN2EwMDAwMDAxMjVkOWU4MGI1YzdjNGY5ODQ2NmY5MjExNzk2ZWJmNDMiLCJleHAiOjE5MDIzODExMTgsInRlbmFudCI6LTEsImNvbXBhbnkiOi0xLCJzY29wZSI6W3sicmVzb3VyY2UiOiJhbGwiLCJhY3Rpb25zIjoiYWxsIn1dLCJpYXQiOjE0NzAzODExMTh9.Gmlu00Uj66Fzts-w6qEwNUz46XYGzE8wHUhAJOFtiRo",
+      "accessToken":"",
 
 
-      "resourceServiceHost": "resourceservice.104.131.67.21.xip.io",
+      "resourceServiceHost": "",
       "resourceServicePort": "8831",
       "resourceServiceVersion": "1.0.0.0",
 
 
-      "interactionurl": "interactions.app.veery.cloud",
+      "interactionurl": "",
       "interactionport": '3637',
       "interactionversion":"1.0.0.0",
 
@@ -147,16 +147,16 @@ module.exports = {
       "cronversion":"1.0.0.0",
 
 
-      "ticketServiceHost": "liteticket.app.veery.cloud",//liteticket.app.veery.cloud
+      "ticketServiceHost": "",//liteticket.app.veery.cloud
       "ticketServicePort": "3636",
       "ticketServiceVersion": "1.0.0.0",
 
-      "ardsServiceHost": "ardsliteservice.104.131.67.21.xip.io",
+      "ardsServiceHost": "",
       "ardsServicePort": "8831",
       "ardsServiceVersion": "1.0.0.0",
 
 
-      "uploadurl": 'fileservice.app.veery.cloud',
+      "uploadurl": '',
       "uploadport": '8888',
       "uploadurlVersion": "1.0.0.0"
 
