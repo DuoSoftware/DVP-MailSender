@@ -6,7 +6,6 @@ var format = require("stringformat");
 var amqp = require('amqp');
 var config = require('config');
 var uuid = require('node-uuid');
-var mongoose = require('mongoose');
 var Template = require('../Model/Template').Template;
 var dust = require('dustjs-linkedin');
 var juice = require('juice');
