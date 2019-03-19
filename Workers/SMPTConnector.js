@@ -160,7 +160,8 @@ function flushWaitingMessages() {
             } else {
                 if (org) {
                     console.log("-------- Step 3 -------------");
-                    Email.findOne({ company: data.message.company, tenant: data.message.tenant, name: data.message.from }, function (err, email) {
+                    /*Email.findOne({ company: data.message.company, tenant: data.message.tenant, name: data.message.from }, function (err, email) {*/
+                        Email.findOne({ company: data.message.company, tenant: data.message.tenant }, function (err, email) {
                         console.log("-------- Step 4 -------------");
                          if (err) {
 
