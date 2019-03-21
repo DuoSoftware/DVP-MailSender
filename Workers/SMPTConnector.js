@@ -102,11 +102,8 @@ queueConnection.on('ready', function () {
 transporter.on('idle', flushWaitingMessages);
 
 function SendMail(mailOptions, data) {
-    console.log('------------------------ SendMail 1 ----------------------');
+    console.log('------------------------ SendMail ----------------------');
     console.log(mailOptions);
-    console.log('------------------------ SendMail 2----------------------');
-    console.log(data);
-    console.log('------------------------ SendMail 3----------------------');
     transporter.sendMail(mailOptions, function (err, info) {
         if (err) {
             console.log('Message failed (%s): %s', data.deliveryTag, err.message);
@@ -165,8 +162,8 @@ function flushWaitingMessages() {
             } else {
                 if (org) {
                     console.log("-------- Step 3 -------------");
-                    /*Email.findOne({ company: data.message.company, tenant: data.message.tenant, name: data.message.from }, function (err, email) {*/
-                    Email.findOne({company: data.message.company, tenant: data.message.tenant}, function (err, email) {
+                    Email.findOne({ company: data.message.company, tenant: data.message.tenant, name: data.message.from }, function (err, email) {
+                    //Email.findOne({company: data.message.company, tenant: data.message.tenant}, function (err, email) {
                         console.log("-------- Step 4 -------------");
                         console.log(email);
                         console.log("-------- ******** -------------");
