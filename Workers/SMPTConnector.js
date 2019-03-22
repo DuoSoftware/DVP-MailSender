@@ -113,6 +113,8 @@ function SendMail(mailOptions, data) {
             return;
         }
         console.log('Message delivered (%s): %s', data.deliveryTag, info.response);
+        console.log("----------------------------");
+        console.log(info);
         data.ack.acknowledge();
 
 
