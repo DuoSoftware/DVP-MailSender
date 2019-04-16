@@ -1,12 +1,9 @@
-
-
-
 var amqp = require('amqp');
 var logger = require('dvp-common/LogHandler/CommonLogHandler.js').logger;
 var request = require('request');
 var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJsonFormatter.js');
 var format = require("stringformat");
-var Template = require('../Model/Template').Template;
+var Template = require('dvp-mongomodels/model/Template').Template;
 var uuid = require('node-uuid');
 var CreateEngagement = require('dvp-common/ServiceAccess/common').CreateEngagement;
 var CreateComment = require('../Workers/common').CreateComment;
@@ -14,6 +11,7 @@ var dust = require('dustjs-linkedin');
 var juice = require('juice');
 var config = require('config');
 var validator = require('validator');
+//var mongomodels = require('dvp-mongomodels');
 
 
 

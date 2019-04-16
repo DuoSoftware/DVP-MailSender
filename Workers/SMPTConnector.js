@@ -6,7 +6,6 @@ var format = require("stringformat");
 var amqp = require('amqp');
 var config = require('config');
 var uuid = require('node-uuid');
-var mongoose = require('mongoose');
 var Template = require('../Model/Template').Template;
 var dust = require('dustjs-linkedin');
 var juice = require('juice');
@@ -57,18 +56,18 @@ var queueConnection = amqp.createConnection({
     noDelay: true,
     heartbeat: 10
 }, {
-        reconnect: true,
-        reconnectBackoffStrategy: 'linear',
-        reconnectExponentialLimit: 120000,
-        reconnectBackoffTime: 1000
-    });
+    reconnect: true,
+    reconnectBackoffStrategy: 'linear',
+    reconnectExponentialLimit: 120000,
+    reconnectBackoffTime: 1000
+});
 
 queueConnection.on('error', function (e) {
     console.log("Error from amqp: ", e);
 });
 
 queueConnection.on('ready', function () {
-    queueConnection.queue(queueName, { durable: true, autoDelete: false }, function (q) {
+    queueConnection.queue(queueName, {durable: true, autoDelete: false}, function (q) {
         q.bind('#');
         q.subscribe({
             ack: true,
@@ -103,6 +102,8 @@ queueConnection.on('ready', function () {
 transporter.on('idle', flushWaitingMessages);
 
 function SendMail(mailOptions, data) {
+    console.log('------------------------ SendMail ----------------------');
+    console.log(mailOptions);
     transporter.sendMail(mailOptions, function (err, info) {
         if (err) {
             console.log('Message failed (%s): %s', data.deliveryTag, err.message);
@@ -112,6 +113,8 @@ function SendMail(mailOptions, data) {
             return;
         }
         console.log('Message delivered (%s): %s', data.deliveryTag, info.response);
+        console.log("----------------------------");
+        console.log(info);
         data.ack.acknowledge();
 
 
@@ -151,7 +154,7 @@ function flushWaitingMessages() {
 
         /////////////////////////////////////////////send message(template)/////////////////////////////////////////////
         console.log("-------- Step 1 -------------");
-        Org.findOne({ tenant: data.message.tenant, id: data.message.company }, function (err, org) {
+        Org.findOne({tenant: data.message.tenant, id: data.message.company}, function (err, org) {
             console.log("-------- Step 2 -------------");
             if (err) {
 
@@ -162,8 +165,13 @@ function flushWaitingMessages() {
                 if (org) {
                     console.log("-------- Step 3 -------------");
                     Email.findOne({ company: data.message.company, tenant: data.message.tenant, name: data.message.from }, function (err, email) {
+                    //Email.findOne({company: data.message.company, tenant: data.message.tenant}, function (err, email) {
                         console.log("-------- Step 4 -------------");
-                         if (err) {
+                        console.log(email);
+                        console.log("-------- ******** -------------");
+                        console.log(data);
+                        console.log("-------- ******** -------------");
+                        if (err) {
 
                             logger.error("Organization emails didn't found", err);
                             data.ack.acknowledge();
@@ -208,12 +216,16 @@ function flushWaitingMessages() {
                                 });
 
                             }
-
+                            console.log("-------- Step 5 -------------");
                             if (util.isArray(attachments) && attachments.length > 0) {
                                 mailOptions.attachments = attachments;
                             }
                             if (data.message.template) {
-                                Template.findOne({ name: data.message.template, company: data.message.company, tenant: data.message.tenant }, function (errPickTemplate, resPickTemp) {
+                                Template.findOne({
+                                    name: data.message.template,
+                                    company: data.message.company,
+                                    tenant: data.message.tenant
+                                }, function (errPickTemplate, resPickTemp) {
 
 
                                     if (!errPickTemplate) {
@@ -295,9 +307,9 @@ function flushWaitingMessages() {
                             } else {
                                 SendMail(mailOptions, data);
                             }
+                            console.log("-------- Done -------------");
                         }
                     });
-
 
 
                     /* var mailOptions = {
