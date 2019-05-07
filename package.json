@@ -15,6 +15,7 @@
     "mail-listener": "^0.7.1",
     "mail-listener2": "^0.2.0",
     "mailin": "^3.0.3",
+    "mandrill-api": "^1.0.45",
     "node-uuid": "^1.4.7",
     "nodemailer": "^2.7.2",
     "q": "^1.5.1",
