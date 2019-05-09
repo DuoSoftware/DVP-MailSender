@@ -11,6 +11,9 @@ const {MandrillHandler} = require('../MandrillHandler');
 var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJsonFormatter.js');
 
 const mandrillHandler = new MandrillHandler();
+var config = require('config');
+
+const emailSendMethod = config.EmailSendMethod;
 
 function GetOrganisation(company, tenant, cb) {
     logger.debug("DVP-UserService.GetOrganisation Internal method ");
@@ -63,7 +66,7 @@ function CreateMailAccount(req, res) {
 
         } else {
 
-            if (domain) { // if domain exists it is considered as a mandrill email config
+            if (emailSendMethod.toLowerCase() === 'mandrill') { // if domain exists it is considered as a mandrill email config
 
                 Mandrill.findOne({ // check if Mandrill subaccount already created
                     company: company,
@@ -81,8 +84,7 @@ function CreateMailAccount(req, res) {
 
                             mandrillHandler.addDomain(req.body.domain).then(function (result) {
 
-                                    let email = req.body.name + '@' + req.body.domain;
-                                    mandrillHandler.whitelistEmail(email, company, tenant).then(function (result) {
+                                    mandrillHandler.whitelistEmail(req.body.fromOverwrite, company, tenant).then(function (result) {
 
                                         jsonString = messageFormatter.FormatMessage(err, "Email saved successfully", true, result);
                                         res.end(jsonString);
@@ -119,8 +121,7 @@ function CreateMailAccount(req, res) {
                                     console.log(result);
                                     mandrillHandler.addDomain(req.body.domain).then(function (result) {
 
-                                            let email = req.body.name + '@' + req.body.domain;
-                                            mandrillHandler.whitelistEmail(email).then(function (result) {
+                                            mandrillHandler.whitelistEmail(req.body.fromOverwrite).then(function (result) {
                                                 if(result.added) {
 
                                                     jsonString = messageFormatter.FormatMessage(err, "Email saved successfully", true, result);

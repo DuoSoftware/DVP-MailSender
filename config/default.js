@@ -1,4 +1,5 @@
 module.exports = {
+  "EmailSendMethod" : "SMPT", //SMPT, mandrill
   "DB": {
     "Type":"postgres",
     "User":"",

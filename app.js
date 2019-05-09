@@ -10,6 +10,7 @@ var mongomodels = require('dvp-mongomodels');
 
 if (config.Host.smtpsender)
     var smtpconnector = require('./Workers/SMPTConnector');
+var mailsender = require('./Workers/MailSender');
 
 
 
