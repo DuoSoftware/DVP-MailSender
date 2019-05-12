@@ -7,9 +7,10 @@ var dust = require('dustjs-linkedin');
 var juice = require('juice');
 var logger = require('dvp-common/LogHandler/CommonLogHandler.js').logger;
 var util = require('util');
+var config = require('config');
 
 var mandrill_client;
-mandrill_client = new mandrill.Mandrill('ZCStpBb19HPJIdnBkFCaIA');
+mandrill_client = new mandrill.Mandrill(config.MANDRILL.mandrillAPIKey);
 
 
 var addSendersDomain = function addSendersDomain(domain) {

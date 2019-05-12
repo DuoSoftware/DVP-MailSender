@@ -93,7 +93,9 @@ module.exports = {
 
     },
 
-
+    "MANDRILL":{
+        "mandrillAPIKey": "SYS_MANDRILLAPIKEY"
+    },
 
     "Services" : {
         "accessToken": "HOST_TOKEN",

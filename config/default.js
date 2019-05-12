@@ -90,8 +90,9 @@ module.exports = {
 
    },
 
-
-
+    "MANDRILL":{
+        "mandrillAPIKey": ""
+    },
 
   "RabbitMQ":
   {
