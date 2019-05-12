@@ -1,6 +1,5 @@
 var SMPTSendMail = require('../SMPTHandler');
-var MandrillHandler = require('../MandrillHandler').MandrillHandler;
-var mandrillHandler = new MandrillHandler();
+var mandrillHandler = require('../MandrillHandler');
 
 var mailSenderFactory = function(send_method) {
     if (send_method == 'SMPT') {

@@ -1,5 +1,6 @@
 module.exports = {
-  "EmailSendMethod" : "SMPT", //SMPT, mandrill
+  "EmailSendMethod" : "smpt", // smpt, mandrill
+
   "DB": {
     "Type":"postgres",
     "User":"",
@@ -23,7 +24,7 @@ module.exports = {
             "name":"redis-cluster"
         }
 
-    },
+        },
 
 
     "Security":
@@ -59,7 +60,7 @@ module.exports = {
     "smssender": true
   },
 
-  "SMSServer":{
+    "SMSServer":{
 
 
     "ip":"",
@@ -69,9 +70,9 @@ module.exports = {
 
 
 
-  },
+    },
 
-  "LBServer" : {
+    "LBServer" : {
 
     "ip": "",
     "port": "4647"
@@ -124,7 +125,7 @@ module.exports = {
     "fetch":true
 
 
-  },
+        },
 
 
 
@@ -157,9 +158,14 @@ module.exports = {
       "ardsServiceVersion": "1.0.0.0",
 
 
-      "uploadurl": '',
-      "uploadport": '8888',
-      "uploadurlVersion": "1.0.0.0"
+        // "mailReceiverHost": "mailreceiver.app.veery.cloud",
+        "mailReceiverHost": "fd2441c7.ngrok.io",
+        "mailReceiverPort": "0000",
+        "mailReceiverVersion": "1.0.0.0",
+
+        "uploadurl": '',
+        "uploadport": '8888',
+        "uploadurlVersion": "1.0.0.0"
 
 
 

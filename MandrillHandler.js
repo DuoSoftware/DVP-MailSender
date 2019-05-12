@@ -1,6 +1,6 @@
-const uuid = require('node-uuid');
-const mandrill = require('mandrill-api/mandrill');
-let mandrill_client;
+var uuid = require('node-uuid');
+var mandrill = require('mandrill-api/mandrill');
+var Mandrill = require('dvp-mongomodels/model/Mandrill').MandrillAccount;
 var format = require("stringformat");
 var Template = require('./Model/Template').Template;
 var dust = require('dustjs-linkedin');
@@ -8,13 +8,11 @@ var juice = require('juice');
 var logger = require('dvp-common/LogHandler/CommonLogHandler.js').logger;
 var util = require('util');
 
+var mandrill_client;
+mandrill_client = new mandrill.Mandrill('ZCStpBb19HPJIdnBkFCaIA');
 
-mandrill_client = new mandrill.Mandrill('');
 
-
-module.exports.MandrillHandler = class MandrillHandler {
-
-    addDomain(domain) {
+var addSendersDomain = function addSendersDomain(domain) {
         return new Promise(function (resolve, reject) {
             mandrill_client.senders.addDomain({
                 "domain": domain
@@ -25,27 +23,87 @@ module.exports.MandrillHandler = class MandrillHandler {
                 reject(e)
             })
         })
-    }
+    };
 
-    createSubAccount(company, tenant) {
+var addInboundDomain = function addInboundDomain(domain) {
         return new Promise(function (resolve, reject) {
-            var uid = uuid.v4();
-
-            mandrill_client.subaccounts.add({
-                "id": uid,
-                "name": company + ':' + tenant,
-                "custom_quota": 40
+            mandrill_client.inbound.addDomain({
+                "domain": domain
             }, function (result) {
                 resolve(result)
             }, function (e) {
                 console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
                 reject(e)
             })
+        })
+    };
+
+var addRoute = function addRoute(domain, pattern, url) {
+        return new Promise(function (resolve, reject) {
+            mandrill_client.inbound.addRoute({
+                "domain": domain,
+                "pattern": pattern,
+                "url": url
+            }, function (result) {
+                resolve(result)
+            }, function (e) {
+                console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
+                reject(e)
+            })
+        })
+    };
+
+var createSubAccountIfNotExist = function createSubAccountIfNotExist(company, tenant) {
+        return new Promise(function (resolve, reject) {
+            var uid = uuid.v4();
+            Mandrill.findOne({ // check if Mandrill subaccount already created
+                company: company,
+                tenant: tenant
+            }, function (err, mandrillAcc) {
+                if(err){
+                    reject(e);
+                }
+                else{
+                    if(mandrillAcc){
+                        resolve(mandrillAcc)
+                    } else{
+                        mandrill_client.subaccounts.add({
+                            "id": uid,
+                            "name": company + ':' + tenant,
+                            "custom_quota": 40
+                        }, function (result) {
+                            var mandrill = Mandrill({
+                                company: company,
+                                tenant: tenant,
+                                sub_account_id: result.id,
+                                created_at: Date.now(),
+                                updated_at: Date.now(),
+                                status: true
+                            });
+                            mandrill.save(function (err, result) {
+                                if(err){
+                                    reject(err)
+                                }else{
+                                    resolve(result)
+
+                                }
+                            })
+
+                        }, function (e) {
+                            console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
+                            reject(e)
+                        })
+                    }
+
+                }
+
+            });
+
 
         })
-    }
+    };
 
-    whitelistEmail(email, company, tenant) {
+var whitelistEmail = function whitelistEmail(email, company, tenant) {
         return new Promise(function (resolve, reject) {
             mandrill_client.whitelists.add({"email": email, "comment": company + ":" + tenant}, function (res) {
                 resolve(res)
@@ -53,9 +111,9 @@ module.exports.MandrillHandler = class MandrillHandler {
                 reject(err)
             })
         })
-    }
+    };
 
-    sendMail(data, org, email) {
+var sendMail = function sendMail(data, org, email) {
 
         var async = false;
         //var ip_pool = "Main Pool";
@@ -272,6 +330,12 @@ module.exports.MandrillHandler = class MandrillHandler {
             }
 
         })
-    }
+    };
 
-};
+
+module.exports.addSendersDomain = addSendersDomain;
+module.exports.addInboundDomain = addInboundDomain;
+module.exports.addRoute = addRoute;
+module.exports.createSubAccountIfNotExist = createSubAccountIfNotExist;
+module.exports.whitelistEmail = whitelistEmail;
+module.exports.sendMail = sendMail;

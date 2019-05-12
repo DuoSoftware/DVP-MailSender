@@ -6,19 +6,20 @@
 var Org = require('dvp-mongomodels/model/Organisation');
 var logger = require('dvp-common/LogHandler/CommonLogHandler.js').logger;
 var Email = require('dvp-mongomodels/model/Email').Email;
-var Mandrill = require('dvp-mongomodels/model/Mandrill').MandrillAccount;
-const {MandrillHandler} = require('../MandrillHandler');
+var Mandrillwh = require('dvp-mongomodels/model/MandrillWebhook').MandrillWebhook;
+var mandrillHandler = require('../MandrillHandler');
 var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJsonFormatter.js');
+var uuid = require('node-uuid');
 
-const mandrillHandler = new MandrillHandler();
 var config = require('config');
 
-const emailSendMethod = config.EmailSendMethod;
+var emailSendMethod = config.EmailSendMethod;
+
 
 function GetOrganisation(company, tenant, cb) {
     logger.debug("DVP-UserService.GetOrganisation Internal method ");
     var jsonString;
-    Org.findOne({ tenant: tenant, id: company }, function (err, org) {
+    Org.findOne({tenant: tenant, id: company}, function (err, org) {
         if (err) {
             return cb(false, undefined);
         } else {
@@ -68,96 +69,67 @@ function CreateMailAccount(req, res) {
 
             if (emailSendMethod.toLowerCase() === 'mandrill') { // if domain exists it is considered as a mandrill email config
 
-                Mandrill.findOne({ // check if Mandrill subaccount already created
-                    company: company,
-                    tenant: tenant
-                }, function (err, mandrillAcc) {
+                mandrillHandler.createSubAccountIfNotExist(company, tenant).then(function (mandrillAcc) {
 
-                    if (err) {
+                    var outboundDomain = req.body.fromOverwrite.split('@').pop();
+                    mandrillHandler.addSendersDomain(outboundDomain).then(function (result) { // add domain to sender's domain
 
-                        jsonString = messageFormatter.FormatMessage(err, "Error occurred while retrieving Mandrill account", false, undefined);
-                        res.end(jsonString);
+                            mandrillHandler.whitelistEmail(req.body.fromOverwrite, company, tenant).then(function (result) {
 
-                    } else {
+                                mandrillHandler.addInboundDomain(domain).then(function (result) {
 
-                        if (mandrillAcc) { // if account exists add domain
+                                    var pattern = req.body.name;
+                                    var webhookURL = config.Services.mailReceiverHost + '/DVP/API/' + config.Services.mailReceiverVersion + '/webhook/' + domain;
 
-                            mandrillHandler.addDomain(req.body.domain).then(function (result) {
+                                    var webhook = Mandrillwh({
 
-                                    mandrillHandler.whitelistEmail(req.body.fromOverwrite, company, tenant).then(function (result) {
+                                        inbound_domain: domain,
+                                        sub_account_id: mandrillAcc._id,
+                                        webhook_url: webhookURL,
+                                        company: company,
+                                        tenant: tenant,
+                                        created_at: Date.now(),
+                                        updated_at: Date.now(),
+                                        status: true
 
-                                        jsonString = messageFormatter.FormatMessage(err, "Email saved successfully", true, result);
-                                        res.end(jsonString);
+                                    });
+                                    webhook.save(function (err, result) {
+                                        mandrillHandler.addRoute(domain, pattern, webhookURL).then(function (result) {
+                                            jsonString = messageFormatter.FormatMessage(err, "Email saved successfully", true, result);
+                                            res.end(jsonString);
 
-                                    }).catch(function (err) {
+                                        }).catch(function (err) {
+                                            jsonString = messageFormatter.FormatMessage(err, "Error occurred while adding webhook to Mandrill", false, result);
+                                            res.end(jsonString);
+                                        });
 
-                                        jsonString = messageFormatter.FormatMessage(err, "Error occurred while adding domain to Mandrill", false, result);
-                                        res.end(jsonString);
+                                    });
 
-                                    })
 
-                                }
-                            ).catch(function (err) {
+                                }).catch(function (err) {
+                                    jsonString = messageFormatter.FormatMessage(err, "Error occurred while adding inbound domain to Mandrill", false, result);
+                                    res.end(jsonString);
+                                });
+
+
+                            }).catch(function (err) {
 
                                 jsonString = messageFormatter.FormatMessage(err, "Error occurred while adding domain to Mandrill", false, result);
                                 res.end(jsonString);
 
                             })
-                        } else { // if account does not exist create subaccount and add domain
 
-                            mandrillHandler.createSubAccount(company, tenant).then(function (result) {
 
-                                console.log(result);
-                                var mandrill = Mandrill({
-                                    company: company,
-                                    tenant: tenant,
-                                    sub_account_id: result.id,
-                                    created_at: Date.now(),
-                                    updated_at: Date.now(),
-                                    status: true
-                                });
-                                mandrill.save(function (result) {
-
-                                    console.log(result);
-                                    mandrillHandler.addDomain(req.body.domain).then(function (result) {
-
-                                            mandrillHandler.whitelistEmail(req.body.fromOverwrite).then(function (result) {
-                                                if(result.added) {
-
-                                                    jsonString = messageFormatter.FormatMessage(err, "Email saved successfully", true, result);
-                                                    res.end(jsonString);
-
-                                                }
-                                                else{
-
-                                                    jsonString = messageFormatter.FormatMessage(err, "Email saved successfully but couldn't whitelist the email", true, result);
-                                                    res.end(jsonString);
-
-                                                }
-
-                                            }).catch(function (err) {
-
-                                                jsonString = messageFormatter.FormatMessage(err, "Error occurred while adding domain to Mandrill", false, result);
-                                                res.end(jsonString);
-
-                                            })
-                                        }
-                                    ).catch(function (err) {
-
-                                        jsonString = messageFormatter.FormatMessage(err, "Error occurred while adding domain to Mandrill", false, result);
-                                        res.end(jsonString);
-
-                                    })
-                                });
-
-                            }).catch(function (err) {
-
-                                jsonString = messageFormatter.FormatMessage(err, "Error occurred while creating Mandrill subaccount", false, null);
-                                res.end(jsonString);
-
-                            });
                         }
-                    }
+                    ).catch(function (err) {
+
+                        jsonString = messageFormatter.FormatMessage(err, "Error occurred while adding domain to Mandrill", false, result);
+                        res.end(jsonString);
+
+                    })
+                }).catch(function (err) {
+                    jsonString = messageFormatter.FormatMessage(err, "Error occurred while accessing Mandrill subaccount", false, result);
+                    res.end(jsonString);
                 })
 
 
@@ -185,7 +157,6 @@ function UpdateEmailAccount(req, res) {
     var jsonString;
 
 
-
     var email = Email({
 
 
@@ -196,7 +167,7 @@ function UpdateEmailAccount(req, res) {
 
     });
 
-    Email.findOneAndUpdate({ _id: req.params.id, company: company, tenant: tenant }, email, function (err, twitter) {
+    Email.findOneAndUpdate({_id: req.params.id, company: company, tenant: tenant}, email, function (err, twitter) {
         if (err) {
             jsonString = messageFormatter.FormatMessage(err, "Update Email account failed", false, undefined);
         } else {
@@ -235,7 +206,7 @@ function GetEmailAccount(req, res) {
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
-    Email.findOne({ _id: req.params.id, company: company, tenant: tenant }, function (err, email) {
+    Email.findOne({_id: req.params.id, company: company, tenant: tenant}, function (err, email) {
         if (err) {
             jsonString = messageFormatter.FormatMessage(err, "Get Email account failed", false, undefined);
         } else {
@@ -259,7 +230,7 @@ function GetEmailAccounts(req, res) {
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
-    Email.find({ company: company, tenant: tenant }, function (err, email) {
+    Email.find({company: company, tenant: tenant}, function (err, email) {
         if (err) {
             jsonString = messageFormatter.FormatMessage(err, "Get Email accounts failed", false, undefined);
         } else {

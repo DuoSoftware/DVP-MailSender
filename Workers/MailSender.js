@@ -169,10 +169,17 @@ function flushWaitingMessages() {
         });
     };
 
-
-    while (SMPTTansporter.isIdle() && waiting.length) {
-        send(waiting.shift());
+    if(emailSendMethod.toLowerCase() === "smpt") {
+        while (SMPTTansporter.isIdle() && waiting.length) {
+            send(waiting.shift());
+        }
     }
+    else if(emailSendMethod.toLowerCase() === 'mandrill'){
+        while (waiting.length){
+            send(waiting.shift());
+        }
+    }
+
 }
 
 
