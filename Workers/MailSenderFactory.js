@@ -2,9 +2,9 @@ var SMPTSendMail = require('../SMPTHandler');
 var mandrillHandler = require('../MandrillHandler');
 
 var mailSenderFactory = function(send_method) {
-    if (send_method == 'SMPT') {
+    if (send_method.toLowerCase() == 'smpt') {
         return SMPTSendMail;
-    } else if (send_method == 'mandrill') {
+    } else if (send_method.toLowerCase() == 'mandrill') {
         return mandrillHandler;
     }
 };

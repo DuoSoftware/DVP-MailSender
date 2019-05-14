@@ -160,11 +160,11 @@ function sendMail(data, org, email) {
                         });
                     } else {
                         logger.error("No template found");
-                        data.ack.acknowledge();
+                        reject()
                     }
                 } else {
                     logger.error("Pick template failed ", errPickTemplate);
-                    data.ack.acknowledge();
+                    reject()
                 }
             });
         } else {

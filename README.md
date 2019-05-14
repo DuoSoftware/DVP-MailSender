@@ -1,2 +1,2 @@
 # DVP-MailReceiver
-SMTP receiver implimentation
+SMTP and Mandrill receiver implementation

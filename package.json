@@ -1,7 +1,7 @@
 {
   "name": "dvp-mailreceiver",
   "version": "1.0.0",
-  "description": "SMTP receiver implimentation",
+  "description": "SMTP and Mandrill receiver implementation",
   "main": "app.js",
   "dependencies": {
     "addressparser": "^1.0.1",
@@ -10,7 +10,7 @@
     "config": "^1.21.0",
     "dustjs-linkedin": "^2.7.2",
     "dvp-common": "^1.2.0",
-    "dvp-mongomodels": "^5.2.17",
+    "dvp-mongomodels": "^5.3.13",
     "juice": "^2.0.0",
     "mail-listener": "^0.7.1",
     "mail-listener2": "^0.2.0",

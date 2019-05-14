@@ -78,7 +78,7 @@ function CreateMailAccount(req, res) {
 
                                 mandrillHandler.addInboundDomain(domain).then(function (result) {
 
-                                    var pattern = req.body.name;
+                                    var pattern = '*'; // route all emails come to the domain to one webhook
                                     var webhookURL = config.Services.mailReceiverHost + '/DVP/API/' + config.Services.mailReceiverVersion + '/webhook/' + domain;
 
                                     var webhook = Mandrillwh({
