@@ -14,6 +14,7 @@ var emailSendMethod = config.EmailSendMethod;
 var CreateEngagement = require('dvp-common/ServiceAccess/common').CreateEngagement;
 var Org = require('dvp-mongomodels/model/Organisation');
 var Email = require('dvp-mongomodels/model/Email').Email;
+var EmailSession = require('dvp-mongomodels/model/MailSession').EmailSession;
 
 //var queueHost = format('amqp://{0}:{1}@{2}:{3}',config.RabbitMQ.user,config.RabbitMQ.password,config.RabbitMQ.ip,config.RabbitMQ.port);
 var queueName = config.Host.emailQueueName;
@@ -148,6 +149,34 @@ function flushWaitingMessages() {
                                         else{
                                             logger.debug("No engagement requested to be created");
                                         }
+
+                                        var from = [{address: info.mailDetails.from_email}];
+                                        var to = [{address: info.mailDetails.to_email}];
+                                        var emailSession = EmailSession({
+                                            direction: "outbound",
+                                            company: data.message.company,
+                                            tenant: data.message.tenant,
+                                            created_at: Date.now(),
+                                            html: data.message.body,
+                                            text: data.message.body,
+                                            subject: data.message.subject,
+                                            to: to,
+                                            from: from,
+                                            date: Date.now(),
+                                            attachments: data.message.attachments,
+                                            messageId: info.mailDetails.messageId
+
+                                        });
+
+                                        emailSession.save(function (err, result) {
+                                            if(err){
+                                                console.log(err);
+                                                logger.error(err);
+                                            }
+                                            else {
+                                                console.log("Email Session saved successfully")
+                                            }
+                                        });
                                     }
 
                                 ).catch(function (err) {
