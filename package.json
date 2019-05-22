@@ -5,6 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "addressparser": "^1.0.1",
+    "aes-js": "^3.1.2",
     "amqp": "^0.2.6",
     "async": "^2.1.2",
     "config": "^1.21.0",

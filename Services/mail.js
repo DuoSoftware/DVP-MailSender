@@ -6,6 +6,7 @@
 var Org = require('dvp-mongomodels/model/Organisation');
 var logger = require('dvp-common/LogHandler/CommonLogHandler.js').logger;
 var Email = require('dvp-mongomodels/model/Email').Email;
+var EmailSession = require('dvp-mongomodels/model/MailSession').EmailSession;
 var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJsonFormatter.js');
 
 
@@ -166,9 +167,80 @@ function GetEmailAccounts(req, res) {
 
 };
 
+function GetEmailReport(req, res) {
+
+    logger.debug("DVP-SocialConnector.GetEmailReport Internal method ");
+
+    var limit = parseInt(req.query.limit) || 10;
+    var offset = (parseInt(req.query.page) - 1 ) * limit || 0;
+    
+    var jsonString;
+
+    var filters = {
+        company: parseInt(req.user.company), 
+        tenant: parseInt(req.user.tenant)
+    };
+
+    if(req.query.from_date && req.query.to_date) {
+        try {
+            var from_date = new Date(req.query.from_date);
+            var to_date = new Date(req.query.to_date);
+        } catch(ex) {
+            jsonString = messageFormatter.FormatMessage(ex, "From and To dates are required", false, undefined);
+            return res.end(jsonString);
+        }
+
+        if(from_date > to_date) {
+            jsonString = messageFormatter.FormatMessage(new Error('Invalid date range'), "From date should be less than To Date", false, undefined);
+            return res.end(jsonString);
+        }
+
+        filters['created_at'] = { $gte: from_date, $lte: to_date };
+    
+        if(req.query.from_email)
+            filters['from.0.address'] = req.query.from_email;
+
+        if(req.query.to_email)
+            filters['to.address'] = req.query.to_email;
+
+        if(req.query.direction)
+            filters['direction'] = req.query.direction;
+
+        EmailSession.count(filters).exec(function(err, count) {
+            if(err) {
+                jsonString = messageFormatter.FormatMessage(null, "Get emails error", true, unedfined);
+                res.end(jsonString);
+            } else {
+                if(count > 0) {
+                    EmailSession.find(filters, { html: 0, headers: 0 })
+                    // .sort({created_at: 'desc'})
+                    .skip(offset)
+                    .limit(limit)
+                    .exec(function (err, emails) {
+                        if (err) {
+                            jsonString = messageFormatter.FormatMessage(err, "Get emails error", false, undefined);
+                        } else {
+                            jsonString = messageFormatter.FormatMessage(null, "Get emails successful", true, { count: count, data: emails });
+                        }
+
+                        res.end(jsonString);
+                    });
+                } else {
+                    jsonString = messageFormatter.FormatMessage(null, "Get emails successful", true, { count: 0, data: [] });
+                    res.end(jsonString);
+                }
+            }
+        });
+
+    } else {
+        jsonString = messageFormatter.FormatMessage(new Error('Date range not provided'), "From and To dates are required", false, undefined);
+        res.end(jsonString);
+    }
+};
 
 module.exports.CreateMailAccount = CreateMailAccount;
 module.exports.UpdateEmailAccount = UpdateEmailAccount;
 module.exports.DeleteEmailAccount = DeleteEmailAccount;
 module.exports.GetEmailAccounts = GetEmailAccounts;
 module.exports.GetEmailAccount = GetEmailAccount;
+module.exports.GetEmailReport = GetEmailReport;
