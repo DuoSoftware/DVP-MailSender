@@ -94,6 +94,7 @@ var server = restify.createServer({
 
 server.pre(restify.pre.userAgentConnection());
 server.use(restify.bodyParser({mapParams: false}));
+server.use(restify.plugins.queryParser());
 server.use(restify.CORS());
 server.use(restify.fullResponse());
 server.use(jwt({secret: secret.Secret}));
@@ -103,6 +104,7 @@ restify.CORS.ALLOW_HEADERS.push('authorization');
 var config = require('config');
 
 var emailService = require('./Services/mail');
+var chatService = require('./Services/chat');
 
 
 server.post('DVP/API/:version/Social/Email', authorization({
@@ -125,6 +127,16 @@ server.put('DVP/API/:version/Social/Email/:id', authorization({
     resource: "social",
     action: "write"
 }), emailService.UpdateEmailAccount);
+
+server.get('DVP/API/:version/Social/Emails/Report', authorization({
+    resource: "social",
+    action: "read"
+}), emailService.GetEmailReport);
+
+server.get('DVP/API/:version/Social/Chat/Conversation/:engagementId', authorization({
+    resource: "social",
+    action: "read"
+}), chatService.getConverstation);
 
 var port = config.Host.port || 3000;
 server.listen(port, function () {
