@@ -49,34 +49,39 @@ queueConnection.on('error', function (e) {
 
 queueConnection.on('ready', function () {
     queueConnection.queue(queueName, {durable: true, autoDelete: false}, function (q) {
-        q.bind('#');
-        q.subscribe({
-            ack: true,
-            prefetchCount: 10
-        }, function (message, headers, deliveryInfo, ack) {
+        try {
+            q.bind('#');
+            q.subscribe({
+                ack: true,
+                prefetchCount: 10
+            }, function (message, headers, deliveryInfo, ack) {
 
-            //message = JSON.parse(message.data.toString());
+                //message = JSON.parse(message.data.toString());
 
-            if (!message.from) {
+                if (!message.from) {
 
-                message.from = "no-reply";
-            }
+                    message.from = "no-reply";
+                }
 
-            if (message === undefined || message.to === undefined || message.company === undefined || message.tenant === undefined) {
-                console.log('Invalid message, skipping');
-                return ack.acknowledge();
-            }
-            ///////////////////////////create body/////////////////////////////////////////////////
+                if (message === undefined || message.to === undefined || message.company === undefined || message.tenant === undefined) {
+                    console.log('Invalid message, skipping');
+                    return ack.acknowledge();
+                }
+                ///////////////////////////create body/////////////////////////////////////////////////
 
 
-            waiting.push({
-                message: message,
-                deliveryTag: deliveryInfo.deliveryTag.toString('hex'),
-                ack: ack
+                waiting.push({
+                    message: message,
+                    deliveryTag: deliveryInfo.deliveryTag.toString('hex'),
+                    ack: ack
+                });
+
+                flushWaitingMessages();
             });
-
-            flushWaitingMessages();
-        });
+        }
+        catch(e){
+            console.log("Error occurred: ", e)
+        }
     });
 });
 
