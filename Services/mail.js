@@ -6,14 +6,20 @@
 var Org = require('dvp-mongomodels/model/Organisation');
 var logger = require('dvp-common/LogHandler/CommonLogHandler.js').logger;
 var Email = require('dvp-mongomodels/model/Email').Email;
+var Mandrillwh = require('dvp-mongomodels/model/MandrillWebhook').MandrillWebhook;
+var mandrillHandler = require('../MandrillHandler');
 var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJsonFormatter.js');
+var uuid = require('node-uuid');
 
+var config = require('config');
+
+var emailSendMethod = config.EmailSendMethod;
 
 
 function GetOrganisation(company, tenant, cb) {
     logger.debug("DVP-UserService.GetOrganisation Internal method ");
     var jsonString;
-    Org.findOne({ tenant: tenant, id: company }, function (err, org) {
+    Org.findOne({tenant: tenant, id: company}, function (err, org) {
         if (err) {
             return cb(false, undefined);
         } else {
@@ -34,7 +40,7 @@ function CreateMailAccount(req, res) {
     var jsonString;
     var tenant = parseInt(req.user.tenant);
     var company = parseInt(req.user.company);
-
+    var domain = req.body.domain;
 
     var email = Email({
 
@@ -42,6 +48,7 @@ function CreateMailAccount(req, res) {
         company: company,
         tenant: tenant,
         name: req.body.name,
+        domain: domain,
         fromOverwrite: req.body.fromOverwrite,
         ticket_type: req.body.ticket_type,
         ticket_tags: req.body.ticket_tags,
@@ -52,15 +59,89 @@ function CreateMailAccount(req, res) {
     });
 
     email.save(function (err, email) {
+
         if (err) {
+
             jsonString = messageFormatter.FormatMessage(err, "Email save failed", false, undefined);
+            res.end(jsonString);
 
         } else {
 
-            jsonString = messageFormatter.FormatMessage(err, "Email saved successfully", true, email);
+            if (emailSendMethod.toLowerCase() === 'mandrill') { // if domain exists it is considered as a mandrill email config
+
+                mandrillHandler.createSubAccountIfNotExist(company, tenant).then(function (mandrillAcc) {
+
+                    var outboundDomain = req.body.fromOverwrite.split('@').pop();
+                    mandrillHandler.addSendersDomain(outboundDomain).then(function (result) { // add domain to sender's domain
+
+                            mandrillHandler.whitelistEmail(req.body.fromOverwrite, company, tenant).then(function (result) {
+
+                                mandrillHandler.addInboundDomain(domain).then(function (result) {
+
+                                    var pattern = '*'; // route all emails come to the domain to one webhook
+                                    var webhookURL = config.Services.mailReceiverHost + '/DVP/API/' + config.Services.mailReceiverVersion + '/webhook/' + domain;
+
+                                    var webhook = Mandrillwh({
+
+                                        inbound_domain: domain,
+                                        sub_account_id: mandrillAcc._id,
+                                        webhook_url: webhookURL,
+                                        company: company,
+                                        tenant: tenant,
+                                        created_at: Date.now(),
+                                        updated_at: Date.now(),
+                                        status: true
+
+                                    });
+                                    webhook.save(function (err, result) {
+                                        mandrillHandler.addRoute(domain, pattern, webhookURL).then(function (result) {
+                                            jsonString = messageFormatter.FormatMessage(err, "Email saved successfully", true, result);
+                                            res.end(jsonString);
+
+                                        }).catch(function (err) {
+                                            jsonString = messageFormatter.FormatMessage(err, "Error occurred while adding webhook to Mandrill", false, result);
+                                            res.end(jsonString);
+                                        });
+
+                                    });
+
+
+                                }).catch(function (err) {
+                                    jsonString = messageFormatter.FormatMessage(err, "Error occurred while adding inbound domain to Mandrill", false, result);
+                                    res.end(jsonString);
+                                });
+
+
+                            }).catch(function (err) {
+
+                                jsonString = messageFormatter.FormatMessage(err, "Error occurred while adding domain to Mandrill", false, result);
+                                res.end(jsonString);
+
+                            })
+
+
+                        }
+                    ).catch(function (err) {
+
+                        jsonString = messageFormatter.FormatMessage(err, "Error occurred while adding domain to Mandrill", false, result);
+                        res.end(jsonString);
+
+                    })
+                }).catch(function (err) {
+                    jsonString = messageFormatter.FormatMessage(err, "Error occurred while accessing Mandrill subaccount", false, result);
+                    res.end(jsonString);
+                })
+
+
+            } else {
+
+                jsonString = messageFormatter.FormatMessage(err, "Email saved successfully", true, email);
+                res.end(jsonString);
+
+            }
         }
 
-        res.end(jsonString);
+
     });
 
 
@@ -76,7 +157,6 @@ function UpdateEmailAccount(req, res) {
     var jsonString;
 
 
-
     var email = Email({
 
 
@@ -87,7 +167,7 @@ function UpdateEmailAccount(req, res) {
 
     });
 
-    Email.findOneAndUpdate({ _id: req.params.id, company: company, tenant: tenant }, email, function (err, twitter) {
+    Email.findOneAndUpdate({_id: req.params.id, company: company, tenant: tenant}, email, function (err, twitter) {
         if (err) {
             jsonString = messageFormatter.FormatMessage(err, "Update Email account failed", false, undefined);
         } else {
@@ -107,7 +187,7 @@ function DeleteEmailAccount(req, res) {
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
-    Email.findOneAndRemove({ _id: req.params.id, company: company, tenant: tenant }, function (err, twitter) {
+    Email.findOneAndRemove({_id: req.params.id, company: company, tenant: tenant}, function (err, twitter) {
         if (err) {
             jsonString = messageFormatter.FormatMessage(err, "Delete Email account failed", false, undefined);
         } else {
@@ -126,7 +206,7 @@ function GetEmailAccount(req, res) {
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
-    Email.findOne({ _id: req.params.id, company: company, tenant: tenant }, function (err, email) {
+    Email.findOne({_id: req.params.id, company: company, tenant: tenant}, function (err, email) {
         if (err) {
             jsonString = messageFormatter.FormatMessage(err, "Get Email account failed", false, undefined);
         } else {
@@ -150,7 +230,7 @@ function GetEmailAccounts(req, res) {
     var company = parseInt(req.user.company);
     var tenant = parseInt(req.user.tenant);
     var jsonString;
-    Email.find({ company: company, tenant: tenant }, function (err, email) {
+    Email.find({company: company, tenant: tenant}, function (err, email) {
         if (err) {
             jsonString = messageFormatter.FormatMessage(err, "Get Email accounts failed", false, undefined);
         } else {
