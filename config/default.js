@@ -6,15 +6,15 @@ module.exports = {
     "User":"duo",
     "Password":"DuoS123",
     "Port":5432,
-    "Host":"localhost",
+    "Host":"104.236.231.11",
     "Database":"dvpdb"
   },
 
 
    "Redis":
     {
-        "mode":"sentinel",//instance, cluster, sentinel
-        "ip": "45.55.142.207",
+        "mode":"instance",//instance, cluster, sentinel
+        "ip": "138.197.90.92",
         "port": 6389,
         "user": "duo",
         "password": "DuoS123",
@@ -30,11 +30,11 @@ module.exports = {
     "Security":
     {
 
-        "ip" : "45.55.142.207",
+        "ip" : "138.197.90.92",
         "port": 6389,
         "user": "duo",
         "password": "DuoS123",
-        "mode":"sentinel",//instance, cluster, sentinel
+        "mode":"instance",//instance, cluster, sentinel
         "sentinels":{
             "hosts": "138.197.90.92,45.55.205.92,138.197.90.92",
             "port":16389,
@@ -159,8 +159,7 @@ module.exports = {
       "ardsServiceVersion": "1.0.0.0",
 
 
-        // "mailReceiverHost": "mailreceiver.app.veery.cloud",
-        "mailReceiverHost": "fd2441c7.ngrok.io",
+        "mailReceiverHost": "mailreceiver.app.veery.cloud",
         "mailReceiverPort": "0000",
         "mailReceiverVersion": "1.0.0.0",
 
