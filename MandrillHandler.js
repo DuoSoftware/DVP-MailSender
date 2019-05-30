@@ -189,7 +189,7 @@ var sendMail = function sendMail(data, org, email) {
             }
 
             if (email && email.fromOverwrite) {
-                mailOptions.from_name = email.fromOverwrite;
+                mailOptions.from_email = email.fromOverwrite;
                 mailOptions.headers.replyTo = email.fromOverwrite;
                 console.log("Overwrite Sender ............");
             }
