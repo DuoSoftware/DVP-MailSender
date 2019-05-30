@@ -9,6 +9,7 @@ var Email = require('dvp-mongomodels/model/Email').Email;
 var Mandrillwh = require('dvp-mongomodels/model/MandrillWebhook').MandrillWebhook;
 var mandrillHandler = require('../MandrillHandler');
 var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJsonFormatter.js');
+var EmailSession = require('dvp-mongomodels/model/MailSession').EmailSession;
 var uuid = require('node-uuid');
 
 var config = require('config');
