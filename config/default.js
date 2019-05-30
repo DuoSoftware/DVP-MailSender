@@ -55,7 +55,8 @@ module.exports = {
     "smsQueueName": "SMSOUT",
     "version": "1.0",
     "smtpsender": true,
-    "smssender": true
+    "smssender": true,
+    "encryptedhex":"1, 12, 3, 4, 5, 16, 7, 8, 12, 10, 11, 12, 13, 14, 15, 16"// accept only 1-16
   },
 
   "SMSServer":{
