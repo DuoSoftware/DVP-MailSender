@@ -156,6 +156,8 @@ var verifySendersDomain = function verifySendersDomain(domain, mailbox) {
 };
 
 var sendMail = function sendMail(data, org, email) {
+    logger.info("Email sending process initiated from Mandrill Handler");
+    console.log("Email sending process initiated from Mandrill Handler");
 
     var async = false;
     //var ip_pool = "Main Pool";
