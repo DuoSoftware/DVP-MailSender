@@ -13,5 +13,5 @@ RUN git clone -b $VERSION_TAG https://github.com/DuoSoftware/DVP-MailSender.git 
 RUN cd /usr/local/src/mailsender;
 WORKDIR /usr/local/src/mailsender
 RUN npm install
-EXPOSE 8878
+EXPOSE 4648
 CMD [ "node", "/usr/local/src/mailsender/app.js" ]
