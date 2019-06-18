@@ -51,9 +51,11 @@ function CreateMailAccount(req, res) {
         name: req.body.name,
         domain: domain,
         fromOverwrite: req.body.fromOverwrite,
+        replytoOverwrite: req.body.replytoOverwrite,
         ticket_type: req.body.ticket_type,
         ticket_tags: req.body.ticket_tags,
         ticket_priority: req.body.ticket_priority,
+        active: true,
         created_at: Date.now(),
         updated_at: Date.now()
 
@@ -173,6 +175,35 @@ function UpdateEmailAccount(req, res) {
             jsonString = messageFormatter.FormatMessage(err, "Update Email account failed", false, undefined);
         } else {
             jsonString = messageFormatter.FormatMessage(undefined, "Update Email account Success", true, twitter);
+        }
+        res.end(jsonString);
+    });
+
+
+};
+
+function ChangeEmailAccountStatus(req, res) {
+
+
+    logger.debug("DVP-SocialConnector.ChangeEmailAccountStatus Internal method ");
+
+    var company = parseInt(req.user.company);
+    var tenant = parseInt(req.user.tenant);
+    var jsonString;
+
+
+    var email = {
+
+        active: req.body.status,
+        updated_at: Date.now()
+
+    };
+
+    Email.findOneAndUpdate({_id: req.params.id, company: company, tenant: tenant}, email, function (err, email) {
+        if (err) {
+            jsonString = messageFormatter.FormatMessage(err, "Update Email account status failed", false, undefined);
+        } else {
+            jsonString = messageFormatter.FormatMessage(undefined, "Update Email account status success", true, email);
         }
         res.end(jsonString);
     });
@@ -321,6 +352,7 @@ function GetEmailReport(req, res) {
 module.exports.CreateMailAccount = CreateMailAccount;
 module.exports.UpdateEmailAccount = UpdateEmailAccount;
 module.exports.DeleteEmailAccount = DeleteEmailAccount;
+module.exports.ChangeEmailAccountStatus = ChangeEmailAccountStatus;
 module.exports.GetEmailAccounts = GetEmailAccounts;
 module.exports.GetEmailAccount = GetEmailAccount;
 module.exports.GetEmailReport = GetEmailReport;

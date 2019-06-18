@@ -127,7 +127,10 @@ server.put('DVP/API/:version/Social/Email/:id', authorization({
     resource: "social",
     action: "write"
 }), emailService.UpdateEmailAccount);
-
+server.put('DVP/API/:version/Social/Email/Status/:id', authorization({
+    resource: "social",
+    action: "write"
+}), emailService.ChangeEmailAccountStatus);
 server.get('DVP/API/:version/Social/Emails/Report', authorization({
     resource: "social",
     action: "read"

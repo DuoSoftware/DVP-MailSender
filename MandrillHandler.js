@@ -195,6 +195,9 @@ var sendMail = function sendMail(data, org, email) {
                 mailOptions.headers.replyTo = email.fromOverwrite;
                 console.log("Overwrite Sender ............");
             }
+            if (email && email.replytoOverwrite) {
+                mailOptions.headers.replyTo = email.replytoOverwrite;
+            }
 
             var attachments = [];
 

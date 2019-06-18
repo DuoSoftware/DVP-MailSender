@@ -32,6 +32,10 @@ function sendMail(data, org, email) {
             console.log("Overwrite Sender ............");
         }
 
+        if (email && email.replytoOverwrite) {
+            mailOptions.replyTo = email.replytoOverwrite;
+        }
+
         var attachments = [];
 
         if (data.message.attachments && util.isArray(data.message.attachments)) {
