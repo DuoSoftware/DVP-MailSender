@@ -55,6 +55,7 @@ function CreateMailAccount(req, res) {
         ticket_type: req.body.ticket_type,
         ticket_tags: req.body.ticket_tags,
         ticket_priority: req.body.ticket_priority,
+        create_engagement: req.body.create_engagement,
         active: true,
         created_at: Date.now(),
         updated_at: Date.now()
