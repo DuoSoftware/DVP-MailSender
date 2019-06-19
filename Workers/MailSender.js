@@ -151,7 +151,11 @@ function flushWaitingMessages() {
                                         if(info.mailDetails.engagement) {
                                             createEngagement(info.mailDetails);
                                         }
-                                        else{
+                                        else if(info.mailDetails.engagement == null && email.create_engagement){
+                                            console.log("engagement creation is not specified in the email object but in email config");
+                                            createEngagement(info.mailDetails);
+                                        }
+                                        else {
                                             logger.debug("No engagement requested to be created");
                                         }
 

@@ -372,13 +372,16 @@ var sendMail = function sendMail(data, org, email) {
                     }
 
                 }, function (e) {
-
+                    console.log(e);
+                    logger.error(e);
                     reject(e);
 
                 });
 
             }
         }).catch(function (err) {
+            console.log(err);
+            logger.error(err);
             reject(err)
         });
 
