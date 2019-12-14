@@ -5,20 +5,23 @@ var config = require('config');
 
 var nodemailer = require('nodemailer');
 
-var smtpHost = {
+var  smtpHost = {
     host: config.SMTP.ip,
     port: config.SMTP.port,
     pool: true,
-    auth: {
-        user: config.SMTP.user,
-        pass: config.SMTP.password
-    },
     tls: {
-
         rejectUnauthorized: false
     },
     logger: false
 };
+
+if(config.SMTP.user && config.SMTP.password){
+    
+    smtpHost.auth = {
+        user: config.SMTP.user,
+        pass: config.SMTP.password
+    }
+}
 
 
 var transporter = nodemailer.createTransport(smtpHost);
