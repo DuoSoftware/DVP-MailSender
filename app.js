@@ -1,20 +1,17 @@
 /**
  * Created by a on 7/18/2016.
  */
-var logger = require('dvp-common/LogHandler/CommonLogHandler.js').logger;
-var config = require('config');
-var util = require('util');
-var Email = require('dvp-mongomodels/model/Email').Email;
-var mongomodels = require('dvp-mongomodels');
-
+var logger = require("dvp-common/LogHandler/CommonLogHandler.js").logger;
+var config = require("config");
+var util = require("util");
+var Email = require("dvp-mongomodels/model/Email").Email;
+var mongomodels = require("dvp-mongomodels");
 
 if (config.Host.smtpsender)
-    var smtpconnector = require('./Workers/SMPTConnector');
-var mailsender = require('./Workers/MailSender');
+  var smtpconnector = require("./Workers/SMPTConnector");
+var mailsender = require("./Workers/MailSender");
 
-
-
-var util = require('util');
+var util = require("util");
 // var mongoip = config.Mongo.ip;
 // var mongoport = config.Mongo.port;
 // var mongodb = config.Mongo.dbname;
@@ -80,76 +77,101 @@ var util = require('util');
 //     });
 // });
 
-
-
 // --------------------- HTTP listners -----------------------
-var restify = require('restify');
-var jwt = require('restify-jwt');
-var secret = require('dvp-common/Authentication/Secret.js');
-var authorization = require('dvp-common/Authentication/Authorization.js');
+var restify = require("restify");
+var jwt = require("restify-jwt");
+var secret = require("dvp-common/Authentication/Secret.js");
+var authorization = require("dvp-common/Authentication/Authorization.js");
 
 var server = restify.createServer({
-    name: "DVP Facebook Sender Service"
+  name: "DVP Mail Sender Service"
 });
 
 server.pre(restify.pre.userAgentConnection());
-server.use(restify.bodyParser({mapParams: false}));
+server.use(restify.bodyParser({ mapParams: false }));
 server.use(restify.plugins.queryParser());
 server.use(restify.CORS());
 server.use(restify.fullResponse());
-server.use(jwt({secret: secret.Secret}));
+server.use(jwt({ secret: secret.Secret }));
 
-restify.CORS.ALLOW_HEADERS.push('authorization');
+restify.CORS.ALLOW_HEADERS.push("authorization");
 
-var config = require('config');
+var config = require("config");
 
-var emailService = require('./Services/mail');
-var chatService = require('./Services/chat');
+var emailService = require("./Services/mail");
+var chatService = require("./Services/chat");
 
-
-server.post('DVP/API/:version/Social/Email', authorization({
+server.post(
+  "DVP/API/:version/Social/Email",
+  authorization({
     resource: "social",
     action: "write"
-}), emailService.CreateMailAccount);
-server.get('DVP/API/:version/Social/Email', authorization({
+  }),
+  emailService.CreateMailAccount
+);
+server.get(
+  "DVP/API/:version/Social/Email",
+  authorization({
     resource: "social",
     action: "read"
-}), emailService.GetEmailAccount);
-server.get('DVP/API/:version/Social/Emails', authorization({
+  }),
+  emailService.GetEmailAccount
+);
+server.get(
+  "DVP/API/:version/Social/Emails",
+  authorization({
     resource: "social",
     action: "read"
-}), emailService.GetEmailAccounts);
-server.del('DVP/API/:version/Social/Email/:id', authorization({
+  }),
+  emailService.GetEmailAccounts
+);
+server.del(
+  "DVP/API/:version/Social/Email/:id",
+  authorization({
     resource: "social",
     action: "delete"
-}), emailService.DeleteEmailAccount);
-server.put('DVP/API/:version/Social/Email/:id', authorization({
+  }),
+  emailService.DeleteEmailAccount
+);
+server.put(
+  "DVP/API/:version/Social/Email/:id",
+  authorization({
     resource: "social",
     action: "write"
-}), emailService.UpdateEmailAccount);
-server.put('DVP/API/:version/Social/Email/Status/:id', authorization({
+  }),
+  emailService.UpdateEmailAccount
+);
+server.put(
+  "DVP/API/:version/Social/Email/Status/:id",
+  authorization({
     resource: "social",
     action: "write"
-}), emailService.ChangeEmailAccountStatus);
-server.get('DVP/API/:version/Social/Emails/Report', authorization({
+  }),
+  emailService.ChangeEmailAccountStatus
+);
+server.get(
+  "DVP/API/:version/Social/Emails/Report",
+  authorization({
     resource: "social",
     action: "read"
-}), emailService.GetEmailReport);
+  }),
+  emailService.GetEmailReport
+);
 
-server.get('DVP/API/:version/Social/Chat/Conversation/:engagementId', authorization({
+server.get(
+  "DVP/API/:version/Social/Chat/Conversation/:engagementId",
+  authorization({
     resource: "social",
     action: "read"
-}), chatService.getConverstation);
+  }),
+  chatService.getConverstation
+);
 
 var port = config.Host.port || 3000;
-server.listen(port, function () {
-    logger.info("DVP-LiteTicket.main Server %s listening at %s", server.name, server.url);
+server.listen(port, function() {
+  logger.info(
+    "DVP-MailSender.main Server %s listening at %s",
+    server.name,
+    server.url
+  );
 });
-
-
-
-
-
-
-
-
