@@ -3,34 +3,34 @@ module.exports = {
 
   DB: {
     Type: "postgres",
-    User: "duo",
-    Password: "DuoS123",
+    User: "",
+    Password: "",
     Port: 5432,
-    Host: "104.236.231.11",
-    Database: "dvpdb"
+    Host: "",
+    Database: ""
   },
 
   Redis: {
     mode: "instance", //instance, cluster, sentinel
-    ip: "138.197.90.92",
+    ip: "",
     port: 6389,
-    user: "duo",
-    password: "DuoS123",
+    user: "",
+    password: "",
     sentinels: {
-      hosts: "138.197.90.92,45.55.205.92,138.197.90.92",
+      hosts: "",
       port: 16389,
       name: "redis-cluster"
     }
   },
 
   Security: {
-    ip: "138.197.90.92",
+    ip: "",
     port: 6389,
-    user: "duo",
-    password: "DuoS123",
+    user: "",
+    password: "",
     mode: "instance", //instance, cluster, sentinel
     sentinels: {
-      hosts: "138.197.90.92,45.55.205.92,138.197.90.92",
+      hosts: "",
       port: 16389,
       name: "redis-cluster"
     }
@@ -57,8 +57,8 @@ module.exports = {
   SMSServer: {
     ip: "159.203.109.43",
     port: "1401",
-    password: "bar",
-    user: "foo"
+    password: "",
+    user: ""
   },
 
   LBServer: {
@@ -78,25 +78,26 @@ module.exports = {
   },
 
   RabbitMQ: {
-    ip: "45.55.142.207",
+    ip: "",
     port: 5672,
-    user: "admin",
-    password: "admin",
+    user: "",
+    password: "",
     vhost: "/"
   },
 
   Mongo: {
-    ip: "104.236.231.11",
+    ip: "",
     port: "27017",
-    dbname: "dvpdb",
-    password: "DuoS123",
-    user: "duo"
+    dbname: "",
+    password: "",
+    user: "",
+    type: "mongodb+srv"
   },
 
   IMAP: {
-    username: "duodemouser@gmail.com",
-    password: "DuoZ4321",
-    host: "imap.gmail.com",
+    username: "",
+    password: "",
+    host: "",
     port: 993,
     secure: true,
     mailbox: "INBOX",
