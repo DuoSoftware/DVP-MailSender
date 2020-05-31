@@ -3,7 +3,7 @@
  */
 
 var amqp = require("amqp");
-var logger = require("dvp-common/LogHandler/CommonLogHandler.js").logger;
+var logger = require("dvp-common-lite/LogHandler/CommonLogHandler.js").logger;
 var mailSender = require("../Workers/MailSenderFactory");
 var SMPTTansporter = require("../Workers/SMPTConnector").transporter;
 var addressparser = require("addressparser");

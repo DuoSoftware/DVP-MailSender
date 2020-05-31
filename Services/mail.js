@@ -4,11 +4,11 @@
 
 
 var Org = require('dvp-mongomodels/model/Organisation');
-var logger = require('dvp-common/LogHandler/CommonLogHandler.js').logger;
+var logger = require('dvp-common-lite/LogHandler/CommonLogHandler.js').logger;
 var Email = require('dvp-mongomodels/model/Email').Email;
 var Mandrillwh = require('dvp-mongomodels/model/MandrillWebhook').MandrillWebhook;
 var mandrillHandler = require('../MandrillHandler');
-var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJsonFormatter.js');
+var messageFormatter = require('dvp-common-lite/CommonMessageGenerator/ClientMessageJsonFormatter.js');
 var EmailSession = require('dvp-mongomodels/model/MailSession').EmailSession;
 var uuid = require('node-uuid');
 

@@ -2,9 +2,9 @@
  * Created by Nimeshka on 5/21/2019.
  */
 
-var logger = require('dvp-common/LogHandler/CommonLogHandler.js').logger;
+var logger = require('dvp-common-lite/LogHandler/CommonLogHandler.js').logger;
 var PersonalMessage = require('dvp-mongomodels/model/Room').PersonalMessage;
-var messageFormatter = require('dvp-common/CommonMessageGenerator/ClientMessageJsonFormatter.js');
+var messageFormatter = require('dvp-common-lite/CommonMessageGenerator/ClientMessageJsonFormatter.js');
 var crypto_handler = require('./crypto_handler.js');
 
 

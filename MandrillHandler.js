@@ -5,7 +5,7 @@ var format = require("stringformat");
 var Template = require('./Model/Template').Template;
 var dust = require('dustjs-linkedin');
 var juice = require('juice');
-var logger = require('dvp-common/LogHandler/CommonLogHandler.js').logger;
+var logger = require('dvp-common-lite/LogHandler/CommonLogHandler.js').logger;
 var util = require('util');
 var config = require('config');
 
