@@ -25,7 +25,7 @@ function sendMail(data, org, email) {
       }
     };
 
-    mailOptions.from = format("{0}@{1}", data.message.from, mailHost);
+    mailOptions.from = mailHost ? format("{0}@{1}", data.message.from, mailHost) : data.message.from;
     mailOptions.replyTo = format(
       "{0}@{1}.{2}",
       data.message.from,
