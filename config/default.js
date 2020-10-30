@@ -47,7 +47,7 @@ module.exports = {
     port: "4648",
     emailQueueName: "EMAILOUT",
     smsQueueName: "SMSOUT",
-    defaultMailHost: "facetone.com",
+    defaultMailHost: "cetone.com",
     version: "1.0",
     smtpsender: true,
     smssender: true,
