@@ -12,7 +12,7 @@ var  smtpHost = {
     tls: {
         rejectUnauthorized: false
     },
-    logger: false
+    logger: true
 };
 
 if(config.SMTP.user && config.SMTP.password){
