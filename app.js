@@ -1,7 +1,7 @@
 /**
  * Created by a on 7/18/2016.
  */
-var logger = require("dvp-common/LogHandler/CommonLogHandler.js").logger;
+var logger = require("dvp-common-lite/LogHandler/CommonLogHandler.js").logger;
 var config = require("config");
 var util = require("util");
 var Email = require("dvp-mongomodels/model/Email").Email;
@@ -80,8 +80,8 @@ var util = require("util");
 // --------------------- HTTP listners -----------------------
 var restify = require("restify");
 var jwt = require("restify-jwt");
-var secret = require("dvp-common/Authentication/Secret.js");
-var authorization = require("dvp-common/Authentication/Authorization.js");
+var secret = require("dvp-common-lite/Authentication/Secret.js");
+var authorization = require("dvp-common-lite/Authentication/Authorization.js");
 
 var server = restify.createServer({
   name: "DVP Mail Sender Service"
