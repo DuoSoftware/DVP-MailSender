@@ -181,7 +181,7 @@ function flushWaitingMessages() {
                       if (info.mailDetails.engagement) {
                         createEngagement(info.mailDetails);
                       } else if (
-                        info.mailDetails.engagement == null &&
+                        info.mailDetails.engagement == null && email &&
                         email.create_engagement
                       ) {
                         console.log(
