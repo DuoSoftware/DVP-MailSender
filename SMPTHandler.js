@@ -151,7 +151,7 @@ function sendMail(data, org, email) {
                             engagement: mailOptions.engagement,
                             company: org.id,
                             tenant: org.tenant,
-                            messageId: result[0]._id,
+                            messageId: info.messageId,
                             subject: data.message.subject
                           };
                           resolve(info);
@@ -169,7 +169,7 @@ function sendMail(data, org, email) {
                           engagement: mailOptions.engagement,
                           company: org.id,
                           tenant: org.tenant,
-                          messageId: result[0]._id,
+                          messageId: info.messageId,
                           subject: data.message.subject
                         };
                         resolve(info);
