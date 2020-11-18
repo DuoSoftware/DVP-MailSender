@@ -61,7 +61,16 @@ module.exports = {
     smtpsender: "HOST_ENABLE_SMTPSENDER",
     smssender: "HOST_ENABLE_SMSSENDER",
     imaplistner: "HOST_ENABLE_IMAPLISTNER",
-    defaultMailHost: "HOST_DEFAULT_MAIL_HOST"
+    defaultMailHost: "HOST_DEFAULT_MAIL_HOST",
+    emailQueueName: "HOST_EMAIL_QUEUE_NAME",
+    smsQueueName: "HOST_SMS_QUEUE_NAME"
+  },
+
+  SMSServer: {
+    ip: "SYS_SMSSERVER_HOST",
+    port: "SYS_SMSSERVER_PORT",
+    password: "SYS_SMSSERVER_PASSWORD",
+    user: "SYS_SMSSERVER_USER"
   },
 
   LBServer: {
@@ -98,6 +107,7 @@ module.exports = {
     resourceServiceHost: "SYS_RESOURCESERVICE_HOST",
     resourceServicePort: "SYS_RESOURCESERVICE_PORT",
     resourceServiceVersion: "SYS_RESOURCESERVICE_VERSION",
+
     uploadurl: "SYS_FILESERVICE_HOST",
     uploadport: "SYS_FILESERVICE_PORT",
     uploadurlVersion: "SYS_FILESERVICE_VERSION",
@@ -116,7 +126,11 @@ module.exports = {
 
     ticketServiceHost: "SYS_LITETICKET_HOST",
     ticketServicePort: "SYS_LITETICKET_PORT",
-    ticketServiceVersion: "SYS_LITETICKET_VERSION"
+    ticketServiceVersion: "SYS_LITETICKET_VERSION",
+
+    ardsServiceHost: "SYS_ARDSLITESERVICE_HOST",
+    ardsServicePort: "SYS_ARDSLITESERVICE_PORT",
+    ardsServiceVersion: "SYS_ARDSLITESERVICE_VERSION"
   }
 };
 
