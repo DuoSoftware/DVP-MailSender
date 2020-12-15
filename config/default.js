@@ -12,10 +12,10 @@ module.exports = {
 
   Redis: {
     mode: "instance", //instance, cluster, sentinel
-    ip: "",
-    port: 6389,
-    user: "",
-    password: "",
+    ip: "13.59.52.179",
+    port: 6379,
+    user: "duo",
+    password: "DuoS123",
     sentinels: {
       hosts: "",
       port: 16389,
@@ -24,11 +24,12 @@ module.exports = {
   },
 
   Security: {
-    ip: "",
-    port: 6389,
-    user: "",
-    password: "",
     mode: "instance", //instance, cluster, sentinel
+    ip: "13.59.52.179",
+    db: 0,
+    port: 6379,
+    user: "duo",
+    password: "DuoS123",
     sentinels: {
       hosts: "",
       port: 16389,
@@ -78,20 +79,21 @@ module.exports = {
   },
 
   RabbitMQ: {
-    ip: "",
+    ip: "45.55.142.207",
     port: 5672,
-    user: "",
-    password: "",
+    user: "admin",
+    password: "admin",
     vhost: "/"
   },
 
-  Mongo: {
-    ip: "",
-    port: "",
-    dbname: "",
-    password: "",
-    user: "",
-    type: "mongodb+srv"
+  "Mongo":
+  {
+    "ip": "facetone-prod.2xyao.mongodb.net",
+    "port": "",
+    "dbname": "test",
+    "password": "Hds7236YD",
+    "user": "facetone",
+    "type": "mongodb+srv"
   },
 
   IMAP: {

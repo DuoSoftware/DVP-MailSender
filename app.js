@@ -110,7 +110,7 @@ server.post(
   emailService.CreateMailAccount
 );
 server.get(
-  "DVP/API/:version/Social/Email",
+  "DVP/API/:version/Social/Email/:id",
   authorization({
     resource: "social",
     action: "read"
@@ -168,7 +168,7 @@ server.get(
 );
 
 var port = config.Host.port || 3000;
-server.listen(port, function() {
+server.listen(port, function () {
   logger.info(
     "DVP-MailSender.main Server %s listening at %s",
     server.name,
