@@ -139,6 +139,8 @@ module.exports = {
 
     uploadurl: "fileservice.app.veery.cloud",
     uploadport: "8888",
-    uploadurlVersion: "1.0.0.0"
+    uploadurlVersion: "1.0.0.0",
+
+    dynamicPort: true
   }
 };

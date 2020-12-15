@@ -41,15 +41,15 @@ var queueConnection = amqp.createConnection(
   }
 );
 
-queueConnection.on("ready", function() {
-  queueConnection.queue(queueName, function(q) {
+queueConnection.on("ready", function () {
+  queueConnection.queue(queueName, function (q) {
     q.bind("#");
     q.subscribe(
       {
         ack: true,
         prefetchCount: 10
       },
-      function(message, headers, deliveryInfo, ack) {
+      function (message, headers, deliveryInfo, ack) {
         message = JSON.parse(message.data.toString());
 
         if (
@@ -74,7 +74,7 @@ queueConnection.on("ready", function() {
 
 var mainServer = format("http://{0}", config.LBServer.ip);
 
-if (validator.isIP(config.LBServer.ip))
+if (config.Services.dynamicPort || validator.isIP(config.LBServer.ip))
   mainServer = format(
     "http://{0}:{1}",
     config.LBServer.ip,
@@ -107,7 +107,7 @@ function SendRequest(company, tenant, mailoptions, cb) {
         method: "GET",
         url: url
       },
-      function(_error, _response, datax) {
+      function (_error, _response, datax) {
         try {
           if (!_error && _response && _response.statusCode == 200) {
             logger.debug("Successfully send sms");
@@ -127,7 +127,7 @@ function SendRequest(company, tenant, mailoptions, cb) {
                 undefined,
                 undefined,
                 undefined,
-                function(done, result) {
+                function (done, result) {
                   if (done) {
                     logger.debug("engagement created successfully");
                     if (mailoptions.reply_session) {
@@ -138,7 +138,7 @@ function SendRequest(company, tenant, mailoptions, cb) {
                         tenant,
                         mailoptions.reply_session,
                         result,
-                        function(done) {
+                        function (done) {
                           if (!done) {
                             logger.debug("comment created successfully");
                             return cb(true);
@@ -193,14 +193,14 @@ function SendSMS(message, deliveryInfo, ack) {
         company: message.company,
         tenant: message.tenant
       },
-      function(errPickTemplate, resPickTemp) {
+      function (errPickTemplate, resPickTemp) {
         if (!errPickTemplate) {
           if (resPickTemp) {
             var compileid = uuid.v4();
 
             var compiled = dust.compile(resPickTemp.content.content, compileid);
             dust.loadSource(compiled);
-            dust.render(compileid, message.Parameters, function(
+            dust.render(compileid, message.Parameters, function (
               errRendered,
               outRendered
             ) {
@@ -231,7 +231,7 @@ function SendSMS(message, deliveryInfo, ack) {
                     if (i == resPickTemp.styles.length - 1) {
                       mailOptions.text = renderedTemplate;
 
-                      SendRequest(company, tenant, mailOptions, function(done) {
+                      SendRequest(company, tenant, mailOptions, function (done) {
                         if (!done) ack.reject(true);
                         else ack.acknowledge();
                       });
@@ -240,7 +240,7 @@ function SendSMS(message, deliveryInfo, ack) {
                 } else {
                   console.log("Rendering Done");
                   mailOptions.text = outRendered;
-                  SendRequest(company, tenant, mailOptions, function(done) {
+                  SendRequest(company, tenant, mailOptions, function (done) {
                     if (!done) ack.reject(true);
                     else ack.acknowledge();
                   });
@@ -258,7 +258,7 @@ function SendSMS(message, deliveryInfo, ack) {
       }
     );
   } else {
-    SendRequest(company, tenant, mailOptions, function(done) {
+    SendRequest(company, tenant, mailOptions, function (done) {
       if (!done) ack.reject(true);
       else ack.acknowledge();
 
